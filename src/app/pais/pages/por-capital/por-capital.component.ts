@@ -1,3 +1,5 @@
+// revisar si funciona ok por capital y por pais
+
 import { Component, OnInit } from '@angular/core';
 import { Country } from '../../interfaces/pais.interface';
 import { PaisService } from '../../services/pais.service';
@@ -11,6 +13,8 @@ export class PorCapitalComponent implements OnInit {
   paises: Country[] = [];
   termino: string = '';
   hayError: boolean = false;
+  mostrarSugerencias: boolean = false;
+  paisesSugeridos: Country[] = [];
   
   constructor( private paisService: PaisService ) { }
 
@@ -19,9 +23,11 @@ export class PorCapitalComponent implements OnInit {
 
   buscar(termino: string){
     this.hayError = false;
+    this.mostrarSugerencias = false;
     this.termino = termino;
     this.paisService.buscarCapital(this.termino).subscribe(paises => {
       this.paises = paises;
+      console.log(paises);
       
     }, (error) => {
       this.hayError = true;
@@ -29,4 +35,22 @@ export class PorCapitalComponent implements OnInit {
     });
   }
 
+  sugerencias(termino: string){
+    this.hayError = false;
+    this.mostrarSugerencias = true;
+    this.termino = termino;
+    this.paisService.buscarPais(this.termino).subscribe(paises => {
+      this.paisesSugeridos = paises;
+      console.log(paises);
+    }, (error) => {
+      this.hayError = true;
+      this.paisesSugeridos = [];
+    });
+    
+    //ToDo crear sugerencias
+  }
+
+  buscarSugerido(termino: string){
+    this.buscar(termino);
+  }
 }
